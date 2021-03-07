@@ -20,4 +20,23 @@ class FPN(nn.Module):
         self.use_p5 = use_p5
     def upsamplelike(self,inputs):
         src,target=inputs
-        return F.interpolate(src, size=(target.shape[2], target.shape[3])),
+        return F.interpolate(src, size=(target.shape[2], target.shape[3])),mode='nearest')
+
+    def init_conv_kaiming(self, module):
+        if isinstance(module, nn.Conv2d):
+            nn.init.kaiming_uniform_(module.weight, a=1)
+            if module.bias is not None:
+                nn.init.constant_(module.bias, 0)
+
+    def forward(self,x):
+        C3,C4,C5=x
+        P5 = self.prj_5(C5)
+        P4 = self.prj_5(C4)
+        P3 = self.prj_5(C3)
+
+        P4 = P4 + self.upsamplelike([P5,C4])
+        P3 = P3 + self.upsamplelike([P4,C3])
+
+        P3 = self.conv_3(P3)
+        P4 = self.conv_4(P4)
+        P5 = self.conv_5(P5)
