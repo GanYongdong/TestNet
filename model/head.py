@@ -65,4 +65,4 @@ class ClsCntRegHead(nn.Module):
                 cnt_logits.append(self.cnt_logits(reg_conv_out))
             reg_preds.append(self.scale_exp[index](self.reg_pred(reg_conv_out)))
         # return cls_logits,cnt_logits,reg_preds
-        return gyd_dead
+        return 

@@ -40,3 +40,8 @@ class FPN(nn.Module):
         P3 = self.conv_3(P3)
         P4 = self.conv_4(P4)
         P5 = self.conv_5(P5)
+
+        P5 = P5 if self.use_p5 else C5
+        P6 = self.conv_out6(P5)
+        P7 = self.conv_out7(F.relu(P6))
+        return [P3,P4,P5,P6,P7]
